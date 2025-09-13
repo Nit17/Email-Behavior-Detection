@@ -67,7 +67,13 @@ def fetch_thread_by_subject(
 ) -> Thread:
     imap = imaplib.IMAP4_SSL(host, port)
     try:
-        imap.login(username, password)
+        # Support XOAUTH2 if password starts with 'oauth2:' (then it's an access token)
+        if password.startswith("oauth2:"):
+            access_token = password.split(":", 1)[1]
+            auth_string = f"user={username}\1auth=Bearer {access_token}\1\1"
+            imap.authenticate("XOAUTH2", lambda x: auth_string)
+        else:
+            imap.login(username, password)
         imap.select(mailbox)
 
         # Try subject search (quoted)

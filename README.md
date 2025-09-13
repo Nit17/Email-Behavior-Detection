@@ -102,6 +102,25 @@ Notes:
 - Security: prefer passing credentials via environment variables and a wrapper script, not the shell history. Consider using a secrets manager for production.
 - The IMAP fetcher searches by subject; you can adjust `--imap-limit` and mailbox with `--imap-mailbox`.
 
+### Gmail OAuth2 (no app password)
+You can use OAuth2 for Gmail IMAP via XOAUTH2:
+
+```
+python -m email_behavior_detection.cli \
+  --imap \
+  --imap-host imap.gmail.com \
+  --imap-port 993 \
+  --imap-username your.name@gmail.com \
+  --gmail-oauth \
+  --gmail-client-secrets path/to/client_secret.json \
+  --gmail-token .gmail_token.json \
+  --imap-subject 'Corporate stay plan (Oct–Dec) — quick check' \
+  --config configs/default_config.yaml \
+  --templates templates/default_templates.yaml
+```
+
+The first run opens a browser for consent and writes the token file. Subsequent runs reuse and refresh the token automatically.
+
 ## Extending
 - Add/modify intents or rules in `configs/default_config.yaml`.
 - Add/modify templates in `templates/default_templates.yaml`.

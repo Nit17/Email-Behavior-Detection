@@ -8,6 +8,7 @@ from .intents import IntentDetector
 from .policy import choose_next_action
 from .templating import load_templates, render_template
 from .ingest_imap import fetch_thread_by_subject
+from .gmail_oauth import get_access_token
 
 
 def _load_thread(path: str) -> Thread:
@@ -44,6 +45,10 @@ def main(argv=None):
     parser.add_argument("--imap-mailbox", default="INBOX", help="Mailbox (default INBOX)")
     parser.add_argument("--imap-subject", help="Subject to match and fetch thread")
     parser.add_argument("--imap-limit", type=int, help="Limit number of messages considered")
+    # Gmail OAuth2
+    parser.add_argument("--gmail-oauth", action="store_true", help="Use Gmail OAuth2 (XOAUTH2) for IMAP")
+    parser.add_argument("--gmail-client-secrets", help="Path to Google OAuth client_secret.json")
+    parser.add_argument("--gmail-token", default=".gmail_token.json", help="Path to store OAuth token JSON")
     args = parser.parse_args(argv)
 
     cfg = load_config(args.config)
@@ -53,11 +58,19 @@ def main(argv=None):
         required = [args.imap_host, args.imap_username, args.imap_password, args.imap_subject]
         if not all(required):
             parser.error("--imap requires --imap-host, --imap-username, --imap-password, and --imap-subject")
+        # Optionally use Gmail OAuth2 to get an access token and pass as oauth2:token
+        imap_password = args.imap_password
+        if args.gmail_oauth:
+            if not args.gmail_client_secrets:
+                parser.error("--gmail-oauth requires --gmail-client-secrets")
+            token, _ = get_access_token(args.gmail_client_secrets, args.gmail_token)
+            imap_password = f"oauth2:{token}"
+
         thread = fetch_thread_by_subject(
             host=args.imap_host,
             port=args.imap_port,
             username=args.imap_username,
-            password=args.imap_password,
+            password=imap_password,
             subject=args.imap_subject,
             mailbox=args.imap_mailbox,
             limit=args.imap_limit,
