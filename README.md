@@ -41,6 +41,11 @@ streamlit run streamlit_app.py
 
 Then open http://localhost:8501. Upload or paste a thread JSON, optionally provide config/templates, and click "Run detection".
 
+### URLs
+- Local development: http://localhost:8501
+- Streamlit Cloud (after deploy): https://email-behavior-detection.streamlit.app
+  - Replace with your actual app URL shown after deployment.
+
 IMAP in the Streamlit UI:
 - Switch Source to "IMAP" in the sidebar.
 - Enter host, username, password (App Password), mailbox (INBOX), and a subject.
