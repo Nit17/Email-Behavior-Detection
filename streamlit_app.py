@@ -6,6 +6,7 @@ from email_behavior_detection.config import load_config
 from email_behavior_detection.intents import IntentDetector
 from email_behavior_detection.policy import choose_next_action
 from email_behavior_detection.templating import load_templates, render_template
+from email_behavior_detection.ingest_imap import fetch_thread_by_subject
 
 
 st.set_page_config(page_title="Email Behavior Detection", layout="wide")
@@ -15,8 +16,19 @@ st.caption("Detect intents from threads and propose next steps + draft a reply."
 
 with st.sidebar:
     st.header("Inputs")
-    thread_file = st.file_uploader("Upload thread JSON", type=["json"], accept_multiple_files=False)
-    thread_text = st.text_area("Or paste thread JSON", height=160)
+    mode = st.radio("Source", ["Upload/Paste JSON", "IMAP"], index=0)
+    if mode == "Upload/Paste JSON":
+        thread_file = st.file_uploader("Upload thread JSON", type=["json"], accept_multiple_files=False)
+        thread_text = st.text_area("Or paste thread JSON", height=160)
+    else:
+        st.subheader("IMAP")
+        imap_host = st.text_input("IMAP host", placeholder="imap.gmail.com")
+        imap_port = st.number_input("IMAP port", value=993, step=1)
+        imap_username = st.text_input("Username (email)")
+        imap_password = st.text_input("Password / App Password", type="password")
+        imap_mailbox = st.text_input("Mailbox", value="INBOX")
+        imap_subject = st.text_input("Subject contains", placeholder="Exact or partial subject")
+        imap_limit = st.number_input("Limit messages (optional)", min_value=0, value=0, step=1)
 
     st.divider()
     config_file = st.file_uploader("Config (YAML)", type=["yaml", "yml"], accept_multiple_files=False)
@@ -39,14 +51,44 @@ col1, col2 = st.columns([1, 1])
 
 if run_btn:
     try:
-        # Thread
-        if thread_file is not None:
-            thread_data = _load_json_bytes(thread_file.read())
-        elif thread_text.strip():
-            thread_data = json.loads(thread_text)
+        # Thread source
+        if mode == "Upload/Paste JSON":
+            if 'thread_file' in locals() and thread_file is not None:
+                thread_data = _load_json_bytes(thread_file.read())
+            elif 'thread_text' in locals() and thread_text.strip():
+                thread_data = json.loads(thread_text)
+            else:
+                st.error("Please upload or paste a thread JSON.")
+                st.stop()
         else:
-            st.error("Please upload or paste a thread JSON.")
-            st.stop()
+            # IMAP path
+            if not (imap_host and imap_username and imap_password and imap_subject):
+                st.error("IMAP: host, username, password, and subject are required.")
+                st.stop()
+            thread = fetch_thread_by_subject(
+                host=imap_host,
+                port=int(imap_port or 993),
+                username=imap_username,
+                password=imap_password,
+                subject=imap_subject,
+                mailbox=imap_mailbox or "INBOX",
+                limit=int(imap_limit or 0) or None,
+            )
+            thread_data = {
+                "subject": thread.subject,
+                "messages": [
+                    {
+                        "timestamp": m.timestamp,
+                        "from_name": m.from_name,
+                        "from_email": m.from_email,
+                        "to": m.to,
+                        "cc": m.cc,
+                        "body": m.body,
+                        "meta": m.meta,
+                    }
+                    for m in thread.messages
+                ],
+            }
 
         # Config
         if config_file is not None:
@@ -64,7 +106,7 @@ if run_btn:
         # Context
         extra_ctx = json.loads(ctx_text or "{}")
 
-        # Build objects
+    # Build objects
         messages = [
             {
                 "timestamp": m.get("timestamp", ""),

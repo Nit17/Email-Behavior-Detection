@@ -41,6 +41,11 @@ streamlit run streamlit_app.py
 
 Then open http://localhost:8501. Upload or paste a thread JSON, optionally provide config/templates, and click "Run detection".
 
+IMAP in the Streamlit UI:
+- Switch Source to "IMAP" in the sidebar.
+- Enter host, username, password (App Password), mailbox (INBOX), and a subject.
+- Click Run detection. The app will fetch messages by subject and analyze.
+
 ### Deploy to Streamlit Community Cloud
 1. Push this repo to GitHub (branch: main).
 2. Go to https://streamlit.io/cloud and create a new app from your repo.
