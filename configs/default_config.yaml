@@ -1,0 +1,13 @@
+team:
+  domains:
+    - yourcompany.com
+  addresses:
+    - reply-team@yourcompany.com
+
+rules:
+  # Placeholder for future rule-level toggles or thresholds
+  thresholds:
+    interest: 0.6
+
+settings:
+  followup_days_after_ooo: 2

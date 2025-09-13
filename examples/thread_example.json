@@ -1,0 +1,85 @@
+{
+  "subject": "Corporate stay plan (Oct–Dec) — quick check",
+  "messages": [
+    {
+      "timestamp": "Day 0, 09:10",
+      "from_name": "Email Reply Team",
+      "from_email": "reply-team@yourcompany.com",
+      "to": ["sales@sunrisehotel.com"],
+      "cc": [],
+      "body": "Hi Team, We’re sharing a corporate stay plan for Oct–Dec. Are you interested? You can reply with: Need details (e.g., breakfast, Wi‑Fi, late checkout), Add teammate (we’ll include the right person), or Not interested. — {{Your Name}}, Email Reply Team"
+    },
+    {
+      "timestamp": "Day 0, 09:11",
+      "from_name": "Auto-Reply (OOO)",
+      "from_email": "no-reply@sunrisehotel.com",
+      "to": ["reply-team@yourcompany.com"],
+      "cc": [],
+      "body": "I’m out of office until Tuesday. For urgent questions, write to frontdesk@sunrisehotel.com."
+    },
+    {
+      "timestamp": "Day 0, 09:40",
+      "from_name": "Front Desk",
+      "from_email": "frontdesk@sunrisehotel.com",
+      "to": ["reply-team@yourcompany.com"],
+      "cc": [],
+      "body": "Please write to sales@sunrisehotel.com for group/corporate plans. (Redirect)"
+    },
+    {
+      "timestamp": "Day 0, 14:20",
+      "from_name": "Sales Manager (Ananya)",
+      "from_email": "ananya@sunrisehotel.com",
+      "to": ["reply-team@yourcompany.com"],
+      "cc": ["arun@sunrisehotel.com"],
+      "body": "Interested. Can you share an updated price list with breakfast included and late checkout info? Adding Arun from our team for any simple paperwork questions."
+    },
+    {
+      "timestamp": "Day 0, 16:00",
+      "from_name": "Email Reply Team",
+      "from_email": "reply-team@yourcompany.com",
+      "to": ["ananya@sunrisehotel.com"],
+      "cc": ["arun@sunrisehotel.com"],
+      "body": "Attached: updated price list + a short one-page summary (what’s included and how to book). Quick questions: Preferred start date? Any blackout dates we should note?"
+    },
+    {
+      "timestamp": "Day 1, 10:30",
+      "from_name": "Arun",
+      "from_email": "arun@sunrisehotel.com",
+      "to": ["reply-team@yourcompany.com"],
+      "cc": ["ananya@sunrisehotel.com"],
+      "body": "Thanks. Please confirm your billing contact name and email. Also, do you prefer monthly or per-stay summaries?"
+    },
+    {
+      "timestamp": "Day 1, 12:05",
+      "from_name": "Email Reply Team",
+      "from_email": "reply-team@yourcompany.com",
+      "to": ["arun@sunrisehotel.com"],
+      "cc": ["ananya@sunrisehotel.com"],
+      "body": "Billing contact: Priya (billing@yourcompany.com). We can do monthly summaries. If this works, we’ll send a simple agreement and a contact form to fill."
+    },
+    {
+      "timestamp": "Day 1, 17:20",
+      "from_name": "Sales (Ananya)",
+      "from_email": "ananya@sunrisehotel.com",
+      "to": ["reply-team@yourcompany.com"],
+      "cc": ["arun@sunrisehotel.com"],
+      "body": "Sounds good. Please proceed with the agreement and form. We aim to confirm by Friday."
+    },
+    {
+      "timestamp": "Day 3, 09:00",
+      "from_name": "Email Reply Team (Reminder)",
+      "from_email": "reply-team@yourcompany.com",
+      "to": ["ananya@sunrisehotel.com"],
+      "cc": ["arun@sunrisehotel.com"],
+      "body": "Friendly reminder: agreement + form attached again. Happy to help with any questions."
+    },
+    {
+      "timestamp": "Day 3, 10:05",
+      "from_name": "Sales (Ananya)",
+      "from_email": "ananya@sunrisehotel.com",
+      "to": ["reply-team@yourcompany.com"],
+      "cc": [],
+      "body": "Got it. Please pause reminders for now—we’ll reply after our manager signs tomorrow."
+    }
+  ]
+}

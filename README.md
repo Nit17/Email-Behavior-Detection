@@ -1,0 +1,83 @@
+# Email Behavior Detection
+
+A small, configurable framework to detect intents from email threads and propose the next step (plus a draft reply) for an email reply team. Built for many paths, not just one example.
+
+## What it does
+- Parses a thread (JSON) of emails.
+- Detects intents using simple, configurable keyword/regex rules.
+- Applies a lightweight policy engine to propose the next action.
+- Drafts a reply using templates with placeholders.
+
+## Quick start
+
+- Requirements: Python 3.9+
+- Install deps:
+
+```
+pip install -r requirements.txt
+```
+
+- Run on the example thread:
+
+```
+python -m email_behavior_detection.cli \
+  --thread examples/thread_example.json \
+  --config configs/default_config.yaml \
+  --templates templates/default_templates.yaml
+```
+
+You’ll see:
+- Intents detected per message
+- Proposed next step
+- A draft reply with placeholders filled
+
+## Streamlit app
+
+- Launch locally:
+
+```
+streamlit run streamlit_app.py
+```
+
+Then open http://localhost:8501. Upload or paste a thread JSON, optionally provide config/templates, and click "Run detection".
+
+### Deploy to Streamlit Community Cloud
+1. Push this repo to GitHub (branch: main).
+2. Go to https://streamlit.io/cloud and create a new app from your repo.
+3. Set main file path to `streamlit_app.py` and deploy. Streamlit will install from `requirements.txt`.
+
+### Deploy to Render (optional)
+1. Push to GitHub.
+2. In Render, create a new Web Service from repo; it will detect `render.yaml`.
+3. Deploy; Render will run `streamlit run streamlit_app.py` on the assigned port.
+
+## Data format (input thread JSON)
+Minimal structure used by the example:
+
+```
+{
+  "subject": "Corporate stay plan (Oct–Dec) — quick check",
+  "messages": [
+    {
+      "timestamp": "Day 0, 09:10",
+      "from_name": "Email Reply Team",
+      "from_email": "reply-team@yourcompany.com",
+      "to": ["sales@sunrisehotel.com"],
+      "cc": [],
+      "body": "Hi Team, ..."
+    }
+    // more messages
+  ]
+}
+```
+
+Fields used by detectors: `from_name`, `from_email`, `body`, plus lightweight checks for who sent the email (your team vs external). Extend as needed.
+
+## Extending
+- Add/modify intents or rules in `configs/default_config.yaml`.
+- Add/modify templates in `templates/default_templates.yaml`.
+- Add new detectors in `email_behavior_detection/intents.py`.
+- Update policy/next steps in `email_behavior_detection/policy.py`.
+
+## Notes
+- This is intentionally simple and deterministic. For production, consider ML/NLP models, richer state, trust boundaries, audit logs, and human-in-the-loop.

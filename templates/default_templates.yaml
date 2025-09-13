@@ -1,0 +1,82 @@
+ack_general: |
+  Hi {latest_from},
+
+  Thanks for the note. Happy to help. If you can share any specifics (dates, inclusions, team size), we’ll tailor the next steps.
+
+  — {{Your Name}}, Email Reply Team
+
+send_materials: |
+  Hi {latest_from},
+
+  Great to hear you’re interested. Attaching the updated price list and a 1-pager (what’s included and how to book).
+  Quick questions:
+  • Preferred start date?
+  • Any blackout dates we should note?
+
+  — {{Your Name}}, Email Reply Team
+
+send_pricing: |
+  Hi {latest_from},
+
+  Sharing the latest price list. If helpful, we can also include breakfast and late checkout in a bundled rate.
+  Would you like us to send that option too?
+
+  — {{Your Name}}, Email Reply Team
+
+send_inclusions: |
+  Hi {latest_from},
+
+  We can include breakfast, high-speed Wi‑Fi, and late checkout (subject to availability). Attaching a short summary and rate options.
+  Any preferences on start date or room mix?
+
+  — {{Your Name}}, Email Reply Team
+
+ack_add_teammate: |
+  Hi {latest_from},
+
+  Thanks for looping your teammate. We’ll include them on updates and simple paperwork.
+  Attaching a 1‑pager and price list for easy reference.
+
+  — {{Your Name}}, Email Reply Team
+
+provide_billing: |
+  Hi {latest_from},
+
+  Billing contact noted. We can share monthly summaries. If helpful, we’ll send a simple agreement and a short contact form to finalize.
+
+  — {{Your Name}}, Email Reply Team
+
+send_agreement: |
+  Hi {latest_from},
+
+  Attaching the simple agreement and contact form. We’ll pause until you confirm or have any questions.
+
+  — {{Your Name}}, Email Reply Team
+
+ack_redirect: |
+  Hi {latest_from},
+
+  Thanks for redirecting us. We’ll reach out to the suggested contact and keep you posted if needed.
+
+  — {{Your Name}}, Email Reply Team
+
+ack_ooo: |
+  Hi {latest_from},
+
+  Thanks for the auto-reply. We’ll follow up after you’re back.
+
+  — {{Your Name}}, Email Reply Team
+
+ack_not_interested: |
+  Hi {latest_from},
+
+  No problem—we’ll close this out. If plans change later, we’re here to help.
+
+  — {{Your Name}}, Email Reply Team
+
+ack_pause: |
+  Hi {latest_from},
+
+  Understood—we’ll pause reminders and wait for your update.
+
+  — {{Your Name}}, Email Reply Team
