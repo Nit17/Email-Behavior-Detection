@@ -7,6 +7,7 @@ from .models import Thread, Message
 from .intents import IntentDetector
 from .policy import choose_next_action
 from .templating import load_templates, render_template
+from .ingest_imap import fetch_thread_by_subject
 
 
 def _load_thread(path: str) -> Thread:
@@ -29,15 +30,40 @@ def _load_thread(path: str) -> Thread:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Email Behavior Detection")
-    parser.add_argument("--thread", required=True, help="Path to thread JSON")
+    src = parser.add_mutually_exclusive_group(required=True)
+    src.add_argument("--thread", help="Path to thread JSON")
+    src.add_argument("--imap", action="store_true", help="Fetch thread via IMAP by subject")
     parser.add_argument("--config", required=True, help="Path to YAML config")
     parser.add_argument("--templates", required=True, help="Path to templates YAML")
     parser.add_argument("--context", default="{}", help="Extra JSON context for templates")
+    # IMAP options
+    parser.add_argument("--imap-host", help="IMAP server host")
+    parser.add_argument("--imap-port", type=int, default=993, help="IMAP SSL port (default 993)")
+    parser.add_argument("--imap-username", help="IMAP username (email address)")
+    parser.add_argument("--imap-password", help="IMAP password or app-specific password")
+    parser.add_argument("--imap-mailbox", default="INBOX", help="Mailbox (default INBOX)")
+    parser.add_argument("--imap-subject", help="Subject to match and fetch thread")
+    parser.add_argument("--imap-limit", type=int, help="Limit number of messages considered")
     args = parser.parse_args(argv)
 
     cfg = load_config(args.config)
     templates = load_templates(args.templates)
-    thread = _load_thread(args.thread)
+    if args.imap:
+        # Basic validation
+        required = [args.imap_host, args.imap_username, args.imap_password, args.imap_subject]
+        if not all(required):
+            parser.error("--imap requires --imap-host, --imap-username, --imap-password, and --imap-subject")
+        thread = fetch_thread_by_subject(
+            host=args.imap_host,
+            port=args.imap_port,
+            username=args.imap_username,
+            password=args.imap_password,
+            subject=args.imap_subject,
+            mailbox=args.imap_mailbox,
+            limit=args.imap_limit,
+        )
+    else:
+        thread = _load_thread(args.thread)
     extra_ctx: Dict[str, Any] = json.loads(args.context)
 
     detector = IntentDetector(

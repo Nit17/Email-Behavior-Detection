@@ -73,6 +73,30 @@ Minimal structure used by the example:
 
 Fields used by detectors: `from_name`, `from_email`, `body`, plus lightweight checks for who sent the email (your team vs external). Extend as needed.
 
+## Connect to your email (IMAP)
+
+The CLI can fetch a thread by subject directly from your inbox via IMAP.
+
+Example:
+
+```
+python -m email_behavior_detection.cli \
+  --imap \
+  --imap-host imap.gmail.com \
+  --imap-port 993 \
+  --imap-username your.name@gmail.com \
+  --imap-password 'APP_PASSWORD' \
+  --imap-subject 'Corporate stay plan (Oct–Dec) — quick check' \
+  --config configs/default_config.yaml \
+  --templates templates/default_templates.yaml
+```
+
+Notes:
+- Gmail: enable 2FA and use an App Password; regular account passwords won’t work.
+- Outlook/Office 365: create an app password or use an IMAP-enabled app-specific credential.
+- Security: prefer passing credentials via environment variables and a wrapper script, not the shell history. Consider using a secrets manager for production.
+- The IMAP fetcher searches by subject; you can adjust `--imap-limit` and mailbox with `--imap-mailbox`.
+
 ## Extending
 - Add/modify intents or rules in `configs/default_config.yaml`.
 - Add/modify templates in `templates/default_templates.yaml`.
