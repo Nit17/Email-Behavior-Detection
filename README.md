@@ -46,6 +46,11 @@ IMAP in the Streamlit UI:
 - Enter host, username, password (App Password), mailbox (INBOX), and a subject.
 - Click Run detection. The app will fetch messages by subject and analyze.
 
+Gmail OAuth in Streamlit:
+- Switch Auth to "Gmail OAuth2" under IMAP.
+- Upload your Google `client_secret.json` (Desktop client).
+- First run: follow console instructions to paste the code; a token file is saved for reuse.
+
 ### Deploy to Streamlit Community Cloud
 1. Push this repo to GitHub (branch: main).
 2. Go to https://streamlit.io/cloud and create a new app from your repo.

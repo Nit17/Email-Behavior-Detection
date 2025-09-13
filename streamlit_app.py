@@ -7,6 +7,7 @@ from email_behavior_detection.intents import IntentDetector
 from email_behavior_detection.policy import choose_next_action
 from email_behavior_detection.templating import load_templates, render_template
 from email_behavior_detection.ingest_imap import fetch_thread_by_subject
+from email_behavior_detection.gmail_oauth import get_access_token
 
 
 st.set_page_config(page_title="Email Behavior Detection", layout="wide")
@@ -25,7 +26,19 @@ with st.sidebar:
         imap_host = st.text_input("IMAP host", placeholder="imap.gmail.com")
         imap_port = st.number_input("IMAP port", value=993, step=1)
         imap_username = st.text_input("Username (email)")
-        imap_password = st.text_input("Password / App Password", type="password")
+        auth_mode = st.radio("Auth", ["Password/App Password", "Gmail OAuth2"], index=0)
+        imap_password = ""
+        gmail_client_secret = None
+        gmail_token_file = None
+        if auth_mode == "Password/App Password":
+            imap_password = st.text_input("Password / App Password", type="password")
+        else:
+            st.caption("Provide Google OAuth client secrets. First run will ask for consent and store a token.")
+            client_file = st.file_uploader("client_secret.json", type=["json"], accept_multiple_files=False, key="client_secret")
+            token_filename = st.text_input("Token filename (persisted)", value=".gmail_token.json")
+            if client_file is not None:
+                gmail_client_secret = client_file.read().decode("utf-8")
+                gmail_token_file = token_filename
         imap_mailbox = st.text_input("Mailbox", value="INBOX")
         imap_subject = st.text_input("Subject contains", placeholder="Exact or partial subject")
         imap_limit = st.number_input("Limit messages (optional)", min_value=0, value=0, step=1)
@@ -62,14 +75,28 @@ if run_btn:
                 st.stop()
         else:
             # IMAP path
-            if not (imap_host and imap_username and imap_password and imap_subject):
-                st.error("IMAP: host, username, password, and subject are required.")
+            if not (imap_host and imap_username and imap_subject):
+                st.error("IMAP: host, username, and subject are required.")
                 st.stop()
+            # Determine auth
+            pwd = imap_password
+            if auth_mode == "Gmail OAuth2":
+                if not gmail_client_secret:
+                    st.error("Upload client_secret.json for Gmail OAuth2.")
+                    st.stop()
+                # Persist client_secret.json and token file on disk for the helper
+                import os, json as _json
+                cs_path = ".gmail_client_secret.json"
+                with open(cs_path, "w", encoding="utf-8") as f:
+                    f.write(gmail_client_secret)
+                token_path = gmail_token_file or ".gmail_token.json"
+                token, _ = get_access_token(cs_path, token_path, use_console=True)
+                pwd = f"oauth2:{token}"
             thread = fetch_thread_by_subject(
                 host=imap_host,
                 port=int(imap_port or 993),
                 username=imap_username,
-                password=imap_password,
+                password=pwd,
                 subject=imap_subject,
                 mailbox=imap_mailbox or "INBOX",
                 limit=int(imap_limit or 0) or None,

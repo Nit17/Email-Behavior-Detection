@@ -15,6 +15,7 @@ SCOPES = ["https://mail.google.com/"]
 def load_or_create_credentials(
     client_secrets_file: str,
     token_file: str,
+    use_console: bool = False,
 ) -> Credentials:
     token_path = Path(token_file)
     creds: Optional[Credentials] = None
@@ -25,8 +26,12 @@ def load_or_create_credentials(
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(client_secrets_file, SCOPES)
-            # Local server flow opens a browser for consent; works locally
-            creds = flow.run_local_server(port=0)
+            if use_console:
+                # Prints a URL and asks for code — works on Streamlit Cloud
+                creds = flow.run_console()
+            else:
+                # Local server flow opens a browser for consent — best for local runs
+                creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         token_path.write_text(creds.to_json())
     return creds
@@ -35,8 +40,9 @@ def load_or_create_credentials(
 def get_access_token(
     client_secrets_file: str,
     token_file: str,
+    use_console: bool = False,
 ) -> Tuple[str, Credentials]:
-    creds = load_or_create_credentials(client_secrets_file, token_file)
+    creds = load_or_create_credentials(client_secrets_file, token_file, use_console=use_console)
     if not creds.valid:
         creds.refresh(Request())
     return creds.token, creds
